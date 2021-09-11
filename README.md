@@ -1,3 +1,20 @@
+### help
+```
+$ va -h
+指数估值表，不构成投资建议，投资有风险，入市需谨慎
+
+数据来源:中证指数官网（www.csindex.com.cn）
+
+Usage:
+   [flags]
+
+Flags:
+  -c, --code string   指数代码
+  -d, --date string   日期，格式：2006-12-28
+  -f, --fast          快速获取，减少模拟用户行为
+  -h, --help          help for this command
+  -t, --table         常见指数估值表，日期默认为昨天 (default true)
+```
 ### 常见宽基指数
 * 上证50（000016）
 * 沪深300（000300/399300）
