@@ -18,13 +18,15 @@ const (
 
 // 基本面
 type Fundamental struct {
-	Date      string `json:"date"`
-	IndexName string `json:"index_name" table:"Name"`
-	IndexCode string `json:"index_code" table:"Code"`
-	PE1       string `json:"pe_1" table:"(总股本)P/E"`
-	PE2       string `json:"pe_2" table:"(计算用股本)P/E"`
-	DP1       string `json:"dp_1" table:"(总股本)D/P"`
-	DP2       string `json:"dp_2" table:"(计算用股本)D/P"`
+	Date      string `json:"日期" table:"日期"`
+	IndexName string `json:"index_name" table:"名称"`
+	IndexCode string `json:"index_code" table:"代码"`
+	EP        string `json:"ep" table:"盈利收益率(%)"`
+	//PE1       string `json:"pe_1" table:"(总股本)P/E"`
+	PE2 string `json:"pe_2" table:"市盈率"`
+	//DP1 string `json:"dp_1" table:"(总股本)D/P"`
+	DP2      string `json:"dp_2" table:"股息率(%)"`
+	Proposal string `json:"proposal" table:"建议"`
 }
 
 type CsIndex struct {
@@ -104,29 +106,29 @@ func (c CsIndex) Parser(data []byte) (interface{}, error) {
 				Add(time.Duration(day.GetInt64()-1) * 24 * time.Hour).Format("2006-01-02")
 			indexCode, _ := row.GetCol(1)
 			IndexName, _ := row.GetCol(3)
-			pe1, _ := row.GetCol(6)
+			//pe1, _ := row.GetCol(6)
 			pe2, _ := row.GetCol(7)
-			dp1, _ := row.GetCol(8)
+			//dp1, _ := row.GetCol(8)
 			dp2, _ := row.GetCol(9)
 
 			r := Fundamental{
 				Date:      date,
 				IndexCode: indexCode.GetString(),
 				IndexName: IndexName.GetString(),
-				PE1:       pe1.GetString(),
-				PE2:       pe2.GetString(),
-				DP1:       dp1.GetString(),
-				DP2:       dp2.GetString(),
+				//PE1:       pe1.GetString(),
+				PE2: pe2.GetString(),
+				//DP1:       dp1.GetString(),
+				DP2: dp2.GetString(),
 			}
-			if len(r.PE1) == 0 {
-				r.PE1 = "--"
-			}
+			//if len(r.PE1) == 0 {
+			//	r.PE1 = "--"
+			//}
 			if len(r.PE2) == 0 {
 				r.PE2 = "--"
 			}
-			if len(r.DP1) == 0 {
-				r.DP1 = "--"
-			}
+			//if len(r.DP1) == 0 {
+			//	r.DP1 = "--"
+			//}
 			if len(r.DP2) == 0 {
 				r.DP2 = "--"
 			}
