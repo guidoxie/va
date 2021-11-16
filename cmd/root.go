@@ -10,14 +10,12 @@ import (
 var desc = fmt.Sprintf("指数估值表，不构成投资建议，投资有风险，入市需谨慎\n\n数据来源:中证指数官网（%s）", spider.CsIndexHost)
 
 var (
-	fast    bool   // -f
 	date    string // -d
 	vaTable bool   // -t
 	code    string // -c
 )
 
 func init() {
-	root.Flags().BoolVarP(&fast, "fast", "f", false, "快速获取，减少模拟用户行为")
 	root.Flags().StringVarP(&date, "date", "d", "", "日期，格式：2006-12-28")
 	root.Flags().BoolVarP(&vaTable, "table", "t", true, "常见指数估值表，日期默认为昨天")
 	root.Flags().StringVarP(&code, "code", "c", "", "指数代码")

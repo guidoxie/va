@@ -1,14 +1,13 @@
 package spider
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
-	"github.com/shakinm/xlsReader/xls"
 	"io/ioutil"
 	"net/http"
 )
 
-var chinaBondUrl = "http://www.csindex.com.cn/zh-CN/bond-valuation/bond-yield-curve?type=2&line_id=1&line_date=1&line_type=2&start_date=%s&end_date=undefined&download=1"
+var chinaBondUrl = "https://www.csindex.com.cn/csindex-home/data/curve/CurveByTradingDateAndCurveCnNameList?tradingDate=%v&bondCurveNameList=cc_ll_gz"
 
 // 获取10年国债收益率
 func Get10BondEP(date string) (string, error) {
@@ -26,35 +25,25 @@ func Get10BondEP(date string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
-	if len(data) == 0 {
+	if len(body) == 0 {
 		return "", nil
 	}
-	f, err := xls.OpenReader(bytes.NewReader(data))
-	if err != nil {
+	m := make(map[string]interface{})
+	if err := json.Unmarshal(body, &m); err != nil {
 		return "", err
 	}
-	sheet, err := f.GetSheet(0)
-	if err != nil {
-		return "", err
-	}
-	for i := 1; i < sheet.GetNumberRows(); i++ {
-		row, err := sheet.GetRow(i)
-		if err != nil {
-			return "", err
-		}
-		if row != nil {
-			y, _ := row.GetCol(2)
-			if y.GetString() == "10" {
-				v, _ := row.GetCol(4)
-				return v.GetString(), nil
+	data, ok := m["data"].([]interface{})
+	if ok {
+		for _, d := range data {
+			row := d.(map[string]interface{})
+			if fmt.Sprintf("%v", row["year"]) == "10" {
+				return fmt.Sprintf("%v", row["ytm"]), nil
 			}
-
 		}
-
 	}
 	return "", nil
 
